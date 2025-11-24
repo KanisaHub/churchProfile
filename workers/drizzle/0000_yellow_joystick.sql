@@ -1,0 +1,7 @@
+CREATE TABLE `church` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`name` text NOT NULL,
+	`city` text NOT NULL,
+	`createdAt` text(9) DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	`updatedAt` text(9) DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
