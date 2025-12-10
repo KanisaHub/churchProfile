@@ -22,7 +22,7 @@ export default function DistrictDaboard() {
     <div className="space-y-8">
       {/* Page Header */}
       <div>
-        <h1 className="font-display text-3xl font-bold text-foreground">
+        <h1 className="text-3xl font-bold text-foreground">
           Welcome to {arushadiocese.name}
         </h1>
         <p className="text-muted-foreground mt-1">
@@ -64,7 +64,7 @@ export default function DistrictDaboard() {
       <div>
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="font-display text-2xl font-semibold text-foreground">
+            <h2 className="text-2xl font-semibold text-foreground">
               Districts Overview
             </h2>
             <p className="text-muted-foreground text-sm mt-1">
