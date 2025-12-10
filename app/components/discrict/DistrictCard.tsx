@@ -24,7 +24,7 @@ export function DistrictCard({ district, index }: DistrictCardProps) {
                 <MapPin className="w-6 h-6 text-primary group-hover:text-primary-foreground" />
               </div>
               <div>
-                <h3 className="font-display text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
                   {district.name}
                 </h3>
                 <p className="text-sm text-muted-foreground">

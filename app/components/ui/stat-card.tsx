@@ -43,9 +43,7 @@ export function StatCard({
           >
             {title}
           </p>
-          <p className="text-3xl font-display font-bold">
-            {value.toLocaleString()}
-          </p>
+          <p className="text-3xl font-bold">{value.toLocaleString()}</p>
           {description && (
             <p
               className={cn(
