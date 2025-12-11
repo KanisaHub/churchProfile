@@ -2,17 +2,23 @@ import { Link } from 'react-router';
 import { MapPin, Church, Users, ChevronRight } from 'lucide-react';
 import { Card, CardContent } from '~/components/ui/card';
 import { Badge } from '~/components/ui/badge';
-import type { District } from '../data';
+import type { SelectDistrict } from 'workers/database/schema/district';
 
 interface DistrictCardProps {
-  district: District;
+  district: SelectDistrict;
   index: number;
 }
 
 export function DistrictCard({ district, index }: DistrictCardProps) {
+  // Format date for display
+  const createdDate = new Date(district.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+
   return (
-    <Link to=".">
-      {/* <Link to={`/district/${district.id}`}></Link> */}
+    <Link to={`/district/${district.id}`}>
       <Card
         className="group relative overflow-hidden border-0 shadow-card hover:shadow-card-hover transition-all duration-300 animate-slide-up cursor-pointer"
         style={{ animationDelay: `${index * 100}ms` }}
@@ -45,22 +51,19 @@ export function DistrictCard({ district, index }: DistrictCardProps) {
               </Badge>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 pt-3 border-t border-border">
+            {/* Placeholder for future church count and members */}
+            <div className="grid grid-cols-2 gap-4 pt-3 border-t border-border opacity-50">
               <div className="flex items-center gap-2">
                 <Church className="w-4 h-4 text-primary" />
                 <div>
-                  <p className="text-xl font-bold text-foreground">
-                    {district.churchCount}
-                  </p>
+                  <p className="text-xl font-bold text-foreground">0</p>
                   <p className="text-xs text-muted-foreground">Churches</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-accent" />
                 <div>
-                  <p className="text-xl font-bold text-foreground">
-                    {district.totalMembers.toLocaleString()}
-                  </p>
+                  <p className="text-xl font-bold text-foreground">0</p>
                   <p className="text-xs text-muted-foreground">Members</p>
                 </div>
               </div>
@@ -69,7 +72,7 @@ export function DistrictCard({ district, index }: DistrictCardProps) {
         </CardContent>
 
         {/* Hover gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-r from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
       </Card>
     </Link>
   );

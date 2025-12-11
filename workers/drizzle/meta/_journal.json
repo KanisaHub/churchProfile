@@ -15,6 +15,13 @@
       "when": 1732464000000,
       "tag": "0001_drop_recreate_church",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1765451365196,
+      "tag": "0002_loving_lady_bullseye",
+      "breakpoints": true
     }
   ]
 }
