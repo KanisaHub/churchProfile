@@ -1,16 +1,24 @@
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
 import { church } from 'workers/database/schema';
 import { z } from 'zod';
+import { eq, like, asc, desc } from 'drizzle-orm';
 
-// Zod schemas for validation
 const createChurchSchema = z.object({
-  name: z.string().min(1, 'Church name is required'),
-  city: z.string().min(1, 'City is required'),
+  name: z.string().min(1),
+  pastor: z.string().min(1),
+  establishedDate: z.string().min(1),
+  location: z.string().min(1),
+  city: z.string().min(1),
+  districtId: z.number().int().min(1),
 });
 
 const updateChurchSchema = z.object({
-  name: z.string().min(1, 'Church name is required').optional(),
-  city: z.string().min(1, 'City is required').optional(),
+  name: z.string().optional(),
+  pastor: z.string().optional(),
+  establishedDate: z.string().optional(),
+  location: z.string().optional(),
+  city: z.string().optional(),
+  districtId: z.number().int().optional(),
 });
 
 const getChurchSchema = z
@@ -26,9 +34,6 @@ const getChurchSchema = z
 export type CreateChurchInput = z.infer<typeof createChurchSchema>;
 export type UpdateChurchInput = z.infer<typeof updateChurchSchema>;
 export type GetChurchInput = z.infer<typeof getChurchSchema>;
-/**
- * Simple service class for managing churches
- */
 
 export default class ChurchService {
   private db: DrizzleD1Database;
@@ -37,23 +42,104 @@ export default class ChurchService {
     this.db = database;
   }
 
-  // Methods for creating, updating, and retrieving churches would go here
-  //Create a new church
-
+  // ────────────────────────────
+  // CREATE
+  // ────────────────────────────
   async createChurch(data: CreateChurchInput) {
-    try {
-      const parsedData = createChurchSchema.parse(data);
-      const result = await this.db
-        .insert(church)
-        .values({
-          name: parsedData.name,
-          city: parsedData.city,
-        })
-        .returning();
-      return result[0] || null;
-    } catch (error) {
-      console.error('Error creating church:', error);
-      return null;
+    const parsed = createChurchSchema.parse(data);
+
+    const result = await this.db
+      .insert(church)
+      .values({
+        name: parsed.name,
+        pastor: parsed.pastor,
+        establishedDate: parsed.establishedDate,
+        location: parsed.location,
+        city: parsed.city,
+        districtId: parsed.districtId,
+      })
+      .returning();
+
+    return result[0] ?? null;
+  }
+
+  // ────────────────────────────
+  // GET ALL
+  // ────────────────────────────
+  async getallChurches(query?: GetChurchInput) {
+    const filters = getChurchSchema.parse(query ?? {}) ?? {
+      limit: 50,
+      offset: 0,
+      sortBy: 'createdAt' as const,
+      sortOrder: 'desc' as const,
+    };
+
+    const orderBy =
+      filters.sortOrder === 'asc'
+        ? asc(church[filters.sortBy])
+        : desc(church[filters.sortBy]);
+
+    const baseQuery = this.db
+      .select()
+      .from(church)
+      .limit(filters.limit)
+      .offset(filters.offset)
+      .orderBy(orderBy);
+
+    if (filters.search) {
+      baseQuery.where(like(church.name, `%${filters.search}%`));
     }
+
+    return await baseQuery;
+  }
+
+  // ────────────────────────────
+  // GET ONE
+  // ────────────────────────────
+  async getChurchById(id: number) {
+    const result = await this.db.select().from(church).where(eq(church.id, id));
+
+    return result[0] ?? null;
+  }
+
+  // ────────────────────────────
+  // GET BY DISTRICT
+  // ────────────────────────────
+  async getChurchesByDistrictId(districtId: number) {
+    return await this.db
+      .select()
+      .from(church)
+      .where(eq(church.districtId, districtId))
+      .orderBy(asc(church.name));
+  }
+
+  // ────────────────────────────
+  // UPDATE
+  // ────────────────────────────
+  async updateChurch(id: number, data: UpdateChurchInput) {
+    const parsed = updateChurchSchema.parse(data);
+
+    const result = await this.db
+      .update(church)
+      .set({
+        ...parsed,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(church.id, id))
+      .returning();
+
+    return result[0] ?? null;
+  }
+
+  // ────────────────────────────
+  // DELETE
+  // ────────────────────────────
+  async deleteChurch(id: number) {
+    const result = await this.db
+      .delete(church)
+      .where(eq(church.id, id))
+      .returning();
+
+    return result[0] ?? null;
   }
 }

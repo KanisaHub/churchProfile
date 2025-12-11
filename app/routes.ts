@@ -18,7 +18,8 @@ const routes: RouteConfig = [
   // Protected app routes (with MainLayout and sidebar)
   layout('layout/MainLayout.tsx', [
     route('dashboard', './routes/pages/dashboard.tsx'),
-    route('district', './routes/pages/DistrictPage.tsx'),
+    route('districts', './routes/pages/districts/districts.tsx'),
+    route('districts/:id', './routes/pages/districts/district.$id.tsx'),
   ]),
 ];
 

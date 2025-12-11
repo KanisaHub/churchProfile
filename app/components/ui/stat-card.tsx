@@ -28,8 +28,8 @@ export function StatCard({
       className={cn(
         'relative overflow-hidden rounded-xl p-6 shadow-card transition-all duration-300 hover:shadow-card-hover animate-slide-up',
         variant === 'default' && 'bg-card',
-        variant === 'primary' && 'bg-primary text-primary-foreground',
-        variant === 'gold' && 'bg-secondary text-secondary-foreground',
+        variant === 'primary' && 'bg-gradient-primary text-primary-foreground',
+        variant === 'gold' && 'bg-gradient-gold text-secondary-foreground',
         className
       )}
     >

@@ -5,6 +5,7 @@ import {
   useNavigation,
   redirect,
   data,
+  Link,
 } from 'react-router';
 import type { Route } from './+types/DistrictPage';
 import { Building2, Church, Users, TrendingUp } from 'lucide-react';
@@ -15,7 +16,7 @@ import { StatCard } from '~/components/ui/stat-card';
 import type { SelectDistrict } from 'workers/database/schema/district';
 
 /* -----------------------------------------------------------
-   LOADER - Fetch all districts
+   LOADER - Fetch all districts with church counts
 ----------------------------------------------------------- */
 export async function loader({ context }: Route.LoaderArgs) {
   try {
@@ -26,7 +27,23 @@ export async function loader({ context }: Route.LoaderArgs) {
       sortOrder: 'asc',
     });
 
-    return data({ districts, error: null }, { status: 200 });
+    // Fetch church counts for each district
+    const districtsWithCounts = await Promise.all(
+      districts.map(async (district: SelectDistrict) => {
+        const churches = await context.services.church.getChurchesByDistrictId(
+          district.id
+        );
+        return {
+          ...district,
+          churchCount: churches.length,
+        };
+      })
+    );
+
+    return data(
+      { districts: districtsWithCounts, error: null },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Error loading districts:', error);
     return data(
@@ -172,6 +189,10 @@ export default function DistrictDashboard() {
 
   // Calculate stats
   const totalDistricts = districts.length;
+  const totalChurches = districts.reduce(
+    (sum: number, district: any) => sum + (district.churchCount || 0),
+    0
+  );
 
   return (
     <div className="space-y-8">
@@ -210,15 +231,15 @@ export default function DistrictDashboard() {
         />
         <StatCard
           title="Total Churches"
-          value={0}
+          value={totalChurches}
           icon={Church}
-          variant="gold"
-          description="Coming soon"
+          description="Across all districts"
         />
         <StatCard
           title="Mission Churches"
           value={0}
           icon={TrendingUp}
+          variant="gold"
           description="Coming soon"
         />
         <StatCard
@@ -258,11 +279,15 @@ export default function DistrictDashboard() {
         {/* Districts Grid */}
         {totalDistricts > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {districts.map((district, index) => (
+            {districts.map((district: any, index: any) => (
               <DistrictCard
                 key={district.id}
                 district={district}
                 index={index}
+                onEdit={(district) => {
+                  setEditingDistrict(district);
+                  setIsModalOpen(true);
+                }}
               />
             ))}
           </div>
