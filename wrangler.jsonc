@@ -17,11 +17,10 @@
     {
       "binding": "churchprofile_db",
       "database_name": "churchprofile_db",
-      "database_id": "7274ecff-5ef5-4821-9b46-363425d7d814",
+      "database_id": "447d4608-fd5c-4811-9156-b8d22ffc3a33",
       "migrations_dir": "./workers/drizzle"
     }
   ]
-
   //   TODO: will study it leter
   /**
    * Deployment Configuration
