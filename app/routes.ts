@@ -20,6 +20,10 @@ const routes: RouteConfig = [
     route('dashboard', './routes/pages/dashboard.tsx'),
     route('districts', './routes/pages/districts/districts.tsx'),
     route('districts/:id', './routes/pages/districts/district.$id.tsx'),
+    route(
+      'districts/:districtId/church/:churchId',
+      './routes/pages/districts/church/church.$id.tsx'
+    ),
   ]),
 ];
 

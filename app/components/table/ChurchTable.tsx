@@ -84,7 +84,7 @@ export function ChurchTable({
                     </div>
                     <div>
                       <Link
-                        to={`/district/${districtId}/church/${church.id}`}
+                        to={`/districts/${districtId}/church/${church.id}`}
                         className="font-medium text-foreground hover:text-primary transition-colors"
                       >
                         {church.name}
@@ -118,7 +118,7 @@ export function ChurchTable({
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem asChild>
                         <Link
-                          to={`/district/${districtId}/church/${church.id}`}
+                          to={`/districts/${districtId}/church/${church.id}`}
                           className="flex items-center gap-2"
                         >
                           <Eye className="w-4 h-4" />
